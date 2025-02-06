@@ -12,7 +12,7 @@ using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegiste
 namespace NSE.Identity.API.Controllers;
 
 [Route("api/identity")]
-public class IdentityController : ControllerBase
+public class IdentityController : MainController
 {
     private readonly SignInManager<IdentityUser> _signInManager;
     private readonly UserManager<IdentityUser> _userManager;
@@ -30,7 +30,7 @@ public class IdentityController : ControllerBase
     {
         if (!ModelState.IsValid)
         {
-            return BadRequest(ModelState);
+            return CustomResponse(ModelState);
         }
 
         var user = new IdentityUser
@@ -44,11 +44,15 @@ public class IdentityController : ControllerBase
 
         if (result.Succeeded)
         {
-            await _signInManager.SignInAsync(user, false);
-            return Ok(await GenerateJwtTokens(model.Email));
+            return CustomResponse(await GenerateJwtTokens(model.Email));
+        }
+
+        foreach (var error in result.Errors)
+        {
+            AddError(error.Description);
         }
         
-        return BadRequest(result.Errors);
+        return CustomResponse();
     }
 
     [HttpPost("login")]
@@ -56,16 +60,23 @@ public class IdentityController : ControllerBase
     {
         if (!ModelState.IsValid)
         {
-            return BadRequest(ModelState);
+            return CustomResponse(ModelState);
         }
         
         var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, true);
 
         if (result.Succeeded)
         {
-            return Ok(await GenerateJwtTokens(model.Email));
+            return CustomResponse(await GenerateJwtTokens(model.Email));
+        }
+
+        if (result.IsLockedOut)
+        {
+            AddError("User account temporarily locked out for too many wrong attempts.");
+            return CustomResponse();
         }
         
+        AddError("Invalid login or password.");
         return BadRequest();
     }
 
