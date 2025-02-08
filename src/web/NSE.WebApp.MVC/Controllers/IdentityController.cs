@@ -1,6 +1,10 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using NSE.WebApp.MVC.Models;
-using NSE.WebApp.MVC.Services;
+using IAuthenticationService = NSE.WebApp.MVC.Services.IAuthenticationService;
 
 namespace NSE.WebApp.MVC.Controllers;
 
@@ -28,7 +32,8 @@ public class IdentityController : Controller
         
         var response = await _authenticationService.RegisterAsync(model);
         
-        if (false) return View(model);
+        // if (false) return View(model);
+        await LoginUser(response);
         
         return RedirectToAction("Index", "Home");
     }
@@ -48,7 +53,8 @@ public class IdentityController : Controller
         
         var response = await _authenticationService.LoginAsync(model);
         
-        if (false) return View(model);
+        // if (false) return View(model);
+        await LoginUser(response);
         
         return RedirectToAction("Index", "Home");
     }
@@ -57,5 +63,29 @@ public class IdentityController : Controller
     public async Task<IActionResult> Logout()
     {
         return RedirectToAction("Index", "Home");
+    }
+
+    private async Task LoginUser(UserLoginResponse userLoginResponse)
+    {
+        var token = GetToken(userLoginResponse.AccessToken);
+        
+        var claims = new List<Claim>();
+        claims.Add(new Claim("JWT", userLoginResponse.AccessToken));
+        claims.AddRange(token.Claims);
+        
+        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+        var authenticationProperties = new AuthenticationProperties
+        {
+            ExpiresUtc = DateTime.UtcNow.AddMinutes(60),
+            IsPersistent = true,
+        };
+        
+        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authenticationProperties);
+    }
+
+    private static JwtSecurityToken GetToken(string jwtToken)
+    {
+        return new JwtSecurityTokenHandler().ReadToken(jwtToken) as JwtSecurityToken;
     }
 }
