@@ -3,7 +3,7 @@ using NSE.WebApp.MVC.Models;
 
 namespace NSE.WebApp.MVC.Services;
 
-public class AuthenticationService : IAuthenticationService
+public class AuthenticationService : BaseService, IAuthenticationService
 {
     private readonly HttpClient _httpClient;
 
@@ -21,6 +21,14 @@ public class AuthenticationService : IAuthenticationService
         
         var response = await _httpClient.PostAsJsonAsync("http://localhost:5143/api/identity/login", userLoginInputModel, options);
         var responseContent = await response.Content.ReadAsStringAsync();
+
+        if (!HandleErrorResponse(response))
+        {
+            return new UserLoginResponse
+            {
+                ResponseResult = JsonSerializer.Deserialize<ResponseResult>(responseContent, options)
+            };
+        }
         
         return JsonSerializer.Deserialize<UserLoginResponse>(responseContent, options);
     }
@@ -34,6 +42,14 @@ public class AuthenticationService : IAuthenticationService
         
         var response = await _httpClient.PostAsJsonAsync("http://localhost:5143/api/identity/register", userRegisterInputModel, options);
         var responseContent = await response.Content.ReadAsStringAsync();
+        
+        if (!HandleErrorResponse(response))
+        {
+            return new UserLoginResponse
+            {
+                ResponseResult = JsonSerializer.Deserialize<ResponseResult>(responseContent, options)
+            };
+        }
         
         return JsonSerializer.Deserialize<UserLoginResponse>(responseContent, options);
     }

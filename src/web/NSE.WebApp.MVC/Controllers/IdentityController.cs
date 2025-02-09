@@ -8,7 +8,7 @@ using IAuthenticationService = NSE.WebApp.MVC.Services.IAuthenticationService;
 
 namespace NSE.WebApp.MVC.Controllers;
 
-public class IdentityController : Controller
+public class IdentityController : MainController
 {
     private readonly IAuthenticationService _authenticationService;
 
@@ -32,7 +32,8 @@ public class IdentityController : Controller
         
         var response = await _authenticationService.RegisterAsync(model);
         
-        // if (false) return View(model);
+        if (ResponseHasErrors(response.ResponseResult)) return View(model);
+        
         await LoginUser(response);
         
         return RedirectToAction("Index", "Home");
@@ -53,7 +54,8 @@ public class IdentityController : Controller
         
         var response = await _authenticationService.LoginAsync(model);
         
-        // if (false) return View(model);
+        if (ResponseHasErrors(response.ResponseResult)) return View(model);
+
         await LoginUser(response);
         
         return RedirectToAction("Index", "Home");
@@ -62,6 +64,7 @@ public class IdentityController : Controller
     [HttpGet]
     public async Task<IActionResult> Logout()
     {
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         return RedirectToAction("Index", "Home");
     }
 
