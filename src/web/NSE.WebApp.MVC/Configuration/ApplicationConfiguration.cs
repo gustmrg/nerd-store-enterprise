@@ -9,8 +9,6 @@ public static class ApplicationConfiguration
         services.AddControllersWithViews();
         
         services.Configure<AppSettings>(configuration.GetSection("AppSettings"));
-
-        services.AddTransient<ExceptionHandlerMiddleware>();
     }
 
     public static void UseMvcConfiguration(this IApplicationBuilder app, IWebHostEnvironment env)

@@ -9,15 +9,17 @@ public class AuthenticationService : BaseService, IAuthenticationService
     private readonly HttpClient _httpClient;
     private readonly AppSettings _appSettings;
 
-    public AuthenticationService(IOptions<AppSettings> appSettings)
+    public AuthenticationService(HttpClient httpClient, IOptions<AppSettings> appSettings)
     {
-        _httpClient = new HttpClient();
         _appSettings = appSettings.Value;
+        _httpClient = httpClient;
+        _httpClient.BaseAddress = new Uri(_appSettings.IdentityApiUrl); 
+        
     }
 
     public async Task<UserLoginResponse> LoginAsync(UserLoginInputModel userLoginInputModel)
     {
-        var response = await _httpClient.PostAsJsonAsync($"{_appSettings.IdentityApiUrl}/api/identity/login", userLoginInputModel);
+        var response = await _httpClient.PostAsJsonAsync("/api/identity/login", userLoginInputModel);
 
         if (!HandleErrorResponse(response))
         {
@@ -32,7 +34,7 @@ public class AuthenticationService : BaseService, IAuthenticationService
 
     public async Task<UserLoginResponse> RegisterAsync(UserRegisterInputModel userRegisterInputModel)
     {
-        var response = await _httpClient.PostAsJsonAsync($"{_appSettings.IdentityApiUrl}/api/identity/register", userRegisterInputModel);
+        var response = await _httpClient.PostAsJsonAsync("/api/identity/register", userRegisterInputModel);
         
         if (!HandleErrorResponse(response))
         {

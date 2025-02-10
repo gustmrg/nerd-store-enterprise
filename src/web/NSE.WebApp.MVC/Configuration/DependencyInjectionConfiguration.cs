@@ -7,7 +7,9 @@ public static class DependencyInjectionConfiguration
 {
     public static void RegisterServices(this IServiceCollection services)
     {
-        services.AddScoped<IAuthenticationService, AuthenticationService>();
+        services.AddTransient<ExceptionHandlerMiddleware>();
+        
+        services.AddHttpClient<IAuthenticationService, AuthenticationService>();
         
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddScoped<IApplicationUser, ApplicationUser>();
