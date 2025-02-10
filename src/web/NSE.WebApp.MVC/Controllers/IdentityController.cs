@@ -41,15 +41,17 @@ public class IdentityController : MainController
     
     [HttpGet]
     [Route("login")]
-    public async Task<IActionResult> Login()
+    public async Task<IActionResult> Login(string returnUrl = null)
     {
+        ViewData["ReturnUrl"] = returnUrl;
         return View();
     }
     
     [HttpPost]
     [Route("login")]
-    public async Task<IActionResult> Login(UserLoginInputModel model)
+    public async Task<IActionResult> Login(UserLoginInputModel model, string returnUrl = null)
     {
+        ViewData["ReturnUrl"] = returnUrl;
         if (!ModelState.IsValid) return View(model);
         
         var response = await _authenticationService.LoginAsync(model);
@@ -58,7 +60,9 @@ public class IdentityController : MainController
 
         await LoginUser(response);
         
-        return RedirectToAction("Index", "Home");
+        if (string.IsNullOrEmpty(returnUrl)) return RedirectToAction("Index", "Home");
+        
+        return LocalRedirect(returnUrl);
     }
 
     [HttpGet]

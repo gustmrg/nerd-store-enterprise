@@ -1,3 +1,5 @@
+using NSE.WebApp.MVC.Extensions;
+
 namespace NSE.WebApp.MVC.Configuration;
 
 public static class ApplicationConfiguration
@@ -11,7 +13,8 @@ public static class ApplicationConfiguration
     {
         if (!env.IsDevelopment())
         {
-            app.UseExceptionHandler("/Home/Error");
+            app.UseExceptionHandler("/error/500");
+            app.UseStatusCodePagesWithRedirects("/error/{0}");
             app.UseHsts();
         }
 
@@ -21,6 +24,8 @@ public static class ApplicationConfiguration
         app.UseRouting();
         
         app.UseIdentityConfiguration();
+
+        app.UseMiddleware<ExceptionHandlerMiddleware>();
 
         app.UseEndpoints(endpoints =>
         {
