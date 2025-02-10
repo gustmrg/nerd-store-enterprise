@@ -1,4 +1,5 @@
-using System.Text.Json;
+using Microsoft.Extensions.Options;
+using NSE.WebApp.MVC.Extensions;
 using NSE.WebApp.MVC.Models;
 
 namespace NSE.WebApp.MVC.Services;
@@ -6,51 +7,41 @@ namespace NSE.WebApp.MVC.Services;
 public class AuthenticationService : BaseService, IAuthenticationService
 {
     private readonly HttpClient _httpClient;
+    private readonly AppSettings _appSettings;
 
-    public AuthenticationService()
+    public AuthenticationService(IOptions<AppSettings> appSettings)
     {
         _httpClient = new HttpClient();
+        _appSettings = appSettings.Value;
     }
-    
+
     public async Task<UserLoginResponse> LoginAsync(UserLoginInputModel userLoginInputModel)
     {
-        var options = new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        };
-        
-        var response = await _httpClient.PostAsJsonAsync("http://localhost:5143/api/identity/login", userLoginInputModel, options);
-        var responseContent = await response.Content.ReadAsStringAsync();
+        var response = await _httpClient.PostAsJsonAsync($"{_appSettings.IdentityApiUrl}/api/identity/login", userLoginInputModel);
 
         if (!HandleErrorResponse(response))
         {
             return new UserLoginResponse
             {
-                ResponseResult = JsonSerializer.Deserialize<ResponseResult>(responseContent, options)
+                ResponseResult = await DeserializeResponse<ResponseResult>(response)
             };
         }
         
-        return JsonSerializer.Deserialize<UserLoginResponse>(responseContent, options);
+        return await DeserializeResponse<UserLoginResponse>(response);
     }
 
     public async Task<UserLoginResponse> RegisterAsync(UserRegisterInputModel userRegisterInputModel)
     {
-        var options = new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        };
-        
-        var response = await _httpClient.PostAsJsonAsync("http://localhost:5143/api/identity/register", userRegisterInputModel, options);
-        var responseContent = await response.Content.ReadAsStringAsync();
+        var response = await _httpClient.PostAsJsonAsync($"{_appSettings.IdentityApiUrl}/api/identity/register", userRegisterInputModel);
         
         if (!HandleErrorResponse(response))
         {
             return new UserLoginResponse
             {
-                ResponseResult = JsonSerializer.Deserialize<ResponseResult>(responseContent, options)
+                ResponseResult = await DeserializeResponse<ResponseResult>(response)
             };
         }
         
-        return JsonSerializer.Deserialize<UserLoginResponse>(responseContent, options);
+        return await DeserializeResponse<UserLoginResponse>(response);
     }
 }

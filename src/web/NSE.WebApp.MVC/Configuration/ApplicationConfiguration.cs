@@ -4,9 +4,13 @@ namespace NSE.WebApp.MVC.Configuration;
 
 public static class ApplicationConfiguration
 {
-    public static void AddMvcConfiguration(this IServiceCollection services)
+    public static void AddMvcConfiguration(this IServiceCollection services, IConfiguration configuration)
     { 
         services.AddControllersWithViews();
+        
+        services.Configure<AppSettings>(configuration.GetSection("AppSettings"));
+
+        services.AddTransient<ExceptionHandlerMiddleware>();
     }
 
     public static void UseMvcConfiguration(this IApplicationBuilder app, IWebHostEnvironment env)

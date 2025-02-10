@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc.Diagnostics;
 using NSE.WebApp.MVC.Extensions;
 
@@ -20,5 +21,15 @@ public abstract class BaseService
         
         response.EnsureSuccessStatusCode();
         return true;
+    }
+
+    protected static async Task<T> DeserializeResponse<T>(HttpResponseMessage response)
+    {
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        return JsonSerializer.Deserialize<T>(await response.Content.ReadAsStringAsync(), options);
     }
 }
