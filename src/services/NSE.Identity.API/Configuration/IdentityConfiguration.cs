@@ -1,10 +1,7 @@
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using NSE.Identity.API.Data;
-using NSE.Identity.API.Extensions;
+using NSE.WebAPI.Core.Identity;
 
 namespace NSE.Identity.API.Configuration;
 
@@ -18,33 +15,7 @@ public static class IdentityConfiguration
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
-        #region JWT configuration
-
-        var appSettingsSection = configuration.GetSection("AppSettings");
-        services.Configure<AppSettings>(appSettingsSection);
-        var appSettings = appSettingsSection.Get<AppSettings>();
-        var key = Encoding.ASCII.GetBytes(appSettings.Secret);
-
-        services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(options => 
-        {
-            options.RequireHttpsMetadata = true;
-            options.SaveToken = true;
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateIssuerSigningKey = true,
-                ValidAudience = appSettings.Audience,
-                ValidIssuer = appSettings.Issuer,
-                IssuerSigningKey =new SymmetricSecurityKey(key)
-            };
-        });
-
-        #endregion
+        services.AddAuthConfiguration(configuration);
         
         return services;
     }

@@ -1,21 +1,20 @@
+using NSE.WebAPI.Core.Identity;
+
 namespace NSE.Identity.API.Configuration;
 
 public static class ApiConfiguration
 {
-    public static IServiceCollection AddApiConfiguration(this IServiceCollection services)
+    public static void AddApiConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddControllers();
-        
-        return services;
+        services.AddAuthConfiguration(configuration);
     }
     
-    public static IApplicationBuilder UseApiConfiguration(this IApplicationBuilder app)
+    public static void UseApiConfiguration(this IApplicationBuilder app)
     {
         app.UseHttpsRedirection();
         app.UseRouting();
         
-        app.UseIdentityConfiguration();
- 
-        return app;
+        app.UseAuthConfiguration();
     }
 }
