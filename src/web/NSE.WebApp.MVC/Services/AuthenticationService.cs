@@ -14,7 +14,6 @@ public class AuthenticationService : BaseService, IAuthenticationService
         _appSettings = appSettings.Value;
         _httpClient = httpClient;
         _httpClient.BaseAddress = new Uri(_appSettings.IdentityApiUrl); 
-        
     }
 
     public async Task<UserLoginResponse> LoginAsync(UserLoginInputModel userLoginInputModel)
