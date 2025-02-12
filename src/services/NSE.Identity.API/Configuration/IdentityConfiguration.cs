@@ -14,17 +14,9 @@ public static class IdentityConfiguration
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
-
+        
         services.AddAuthConfiguration(configuration);
         
         return services;
-    }
-
-    public static IApplicationBuilder UseIdentityConfiguration(this IApplicationBuilder app)
-    {
-        app.UseAuthentication();
-        app.UseAuthorization();
-        
-        return app;
     }
 }

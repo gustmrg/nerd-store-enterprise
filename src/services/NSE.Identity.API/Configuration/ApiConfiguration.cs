@@ -7,7 +7,6 @@ public static class ApiConfiguration
     public static void AddApiConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddControllers();
-        services.AddAuthConfiguration(configuration);
     }
     
     public static void UseApiConfiguration(this IApplicationBuilder app)
@@ -16,5 +15,7 @@ public static class ApiConfiguration
         app.UseRouting();
         
         app.UseAuthConfiguration();
+        
+        app.UseEndpoints(endpoints => endpoints.MapControllers());
     }
 }
