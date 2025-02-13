@@ -36,11 +36,11 @@ ViewData["Title"] = Model.Name;
                     </div>
 
                     <div class="mb-3">
-                        <var class="price h4">@Model.Price</var>
+                        <var class="price h4">@RazorHelpers.FormatPrice(@Model.Price)</var>
                     </div>
 
                     <h5>@Model.Description</h5><br />
-                    <p> @Model.Quantity</p>
+                    <p>@RazorHelpers.GetStockMessage(@Model.Quantity)</p>
 
                     <hr>
 

@@ -1,3 +1,4 @@
+@using NSE.WebApp.MVC.Extensions
 @model IEnumerable<NSE.WebApp.MVC.Models.ProductViewModel>
 
 @{
@@ -27,12 +28,12 @@ ViewData["Title"] = "Todos os produtos";
                             </a>
 
                             <small class="card-text">
-                                @product.Quantity<br/><br/>
+                                @RazorHelpers.GetStockMessage(product.Quantity)<br/><br/>
                                 @product.Description
                             </small>
                         </figcaption>
                         <div class="card-footer price mt-1">
-                            <h3>@product.Price</h3>
+                            <h3>@RazorHelpers.FormatPrice(product.Price)</h3>
                         </div>
                     </div>
                 </div>

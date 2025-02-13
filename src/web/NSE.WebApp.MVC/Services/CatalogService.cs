@@ -19,7 +19,7 @@ public class CatalogService : BaseService, ICatalogService
     
     public async Task<IEnumerable<ProductViewModel>> GetAll()
     {
-        var response = await _httpClient.GetAsync("/catalog/products");
+        var response = await _httpClient.GetAsync("api/catalog/products");
         
         HandleErrorResponse(response);
         
@@ -28,7 +28,7 @@ public class CatalogService : BaseService, ICatalogService
 
     public async Task<ProductViewModel> GetById(Guid id)
     {
-        var response = await _httpClient.GetAsync($"/catalog/products/{id}");
+        var response = await _httpClient.GetAsync($"api/catalog/products/{id}");
         
         HandleErrorResponse(response);
         
