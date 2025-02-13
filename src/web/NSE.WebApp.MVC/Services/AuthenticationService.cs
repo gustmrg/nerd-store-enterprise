@@ -18,7 +18,7 @@ public class AuthenticationService : BaseService, IAuthenticationService
 
     public async Task<UserLoginResponse> LoginAsync(UserLoginInputModel userLoginInputModel)
     {
-        var response = await _httpClient.PostAsJsonAsync("/api/identity/login", userLoginInputModel);
+        var response = await _httpClient.PostAsJsonAsync("/identity/login", userLoginInputModel);
 
         if (!HandleErrorResponse(response))
         {
@@ -33,7 +33,7 @@ public class AuthenticationService : BaseService, IAuthenticationService
 
     public async Task<UserLoginResponse> RegisterAsync(UserRegisterInputModel userRegisterInputModel)
     {
-        var response = await _httpClient.PostAsJsonAsync("/api/identity/register", userRegisterInputModel);
+        var response = await _httpClient.PostAsJsonAsync("/identity/register", userRegisterInputModel);
         
         if (!HandleErrorResponse(response))
         {

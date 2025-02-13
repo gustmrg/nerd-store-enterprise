@@ -5,7 +5,7 @@ var configuration = builder.Configuration;
 
 builder.Services.AddIdentityConfiguration();
 builder.Services.AddMvcConfiguration(configuration);
-builder.Services.RegisterServices();
+builder.Services.AddServices(configuration);
 
 var app = builder.Build();
 

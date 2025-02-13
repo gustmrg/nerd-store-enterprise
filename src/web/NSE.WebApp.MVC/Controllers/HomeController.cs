@@ -29,8 +29,7 @@ public class HomeController : Controller
         }
         else if (id == 404)
         {
-            errorModel.Message =
-                "A página que está procurando não existe! <br />Em caso de dúvidas entre em contato com nosso suporte";
+            errorModel.Message = "A página que está procurando não existe! <br />Em caso de dúvidas entre em contato com nosso suporte";
             errorModel.Title = "Ops! Página não encontrada.";
             errorModel.ErrorCode = id;
         }
@@ -45,6 +44,20 @@ public class HomeController : Controller
             return StatusCode(404);
         }
 
+        return View("Error", errorModel);
+    }
+
+    [Route("unavailable")]
+    public IActionResult Unavailable()
+    {
+        var errorModel = new ErrorViewModel
+        {
+            Message =
+                "O sistema está temporariamente indisponível! Isto pode ocorrer em momentos de sobrecarga de usuários. Por favor, aguarde alguns minutos.",
+            Title = "Sistema indisponível",
+            ErrorCode = 500
+        };
+        
         return View("Error", errorModel);
     }
 }
