@@ -20,7 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{B10748C7-F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NSE.Core", "src\building blocks\NSE.Core\NSE.Core.csproj", "{6CE485F6-5EB9-46B9-98F8-48E3C5A18B2D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Customer", "Customer", "{CEA4DD92-492F-4AF5-A21C-C3317E23BA72}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Customers", "Customers", "{CEA4DD92-492F-4AF5-A21C-C3317E23BA72}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Payment", "Payment", "{48688A38-7129-40D2-A6D0-B2F45DDD0570}"
 EndProject
@@ -32,7 +32,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ShoppingCart", "ShoppingCar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NSE.Catalog.API", "src\services\NSE.Catalog.API\NSE.Catalog.API.csproj", "{C980E57B-8F0A-4194-A69F-93746216C4D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NSE.Customer.API", "src\services\NSE.Customer.API\NSE.Customer.API.csproj", "{91CCD778-E570-4361-A1E4-A4EE0C5852EA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NSE.Customers.API", "src\services\NSE.Customers.API\NSE.Customers.API.csproj", "{91CCD778-E570-4361-A1E4-A4EE0C5852EA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NSE.Order.API", "src\services\NSE.Order.API\NSE.Order.API.csproj", "{7C4FC7EC-A0BC-4676-A499-9531AA690128}"
 EndProject
