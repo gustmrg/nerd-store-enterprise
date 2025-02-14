@@ -21,4 +21,8 @@
       <PackageReference Include="Refit.HttpClientFactory" Version="8.0.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\building blocks\NSE.Core\NSE.Core.csproj" />
+    </ItemGroup>
+
 </Project>

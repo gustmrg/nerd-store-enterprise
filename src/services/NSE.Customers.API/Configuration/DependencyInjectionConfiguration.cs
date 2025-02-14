@@ -13,7 +13,7 @@ public static class DependencyInjectionConfiguration
 {
     public static void AddServices(this IServiceCollection services)
     {
-        services.AddScoped<CustomerContext>();
+        services.AddScoped<CustomersContext>();
         services.AddScoped<ICustomersRepository, CustomersRepository>();
         
         services.AddScoped<IMediatorHandler, MediatorHandler>();

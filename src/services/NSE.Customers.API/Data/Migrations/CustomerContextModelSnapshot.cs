@@ -10,7 +10,7 @@ using NSE.Customers.API.Data;
 
 namespace NSE.Customers.API.Data.Migrations
 {
-    [DbContext(typeof(CustomerContext))]
+    [DbContext(typeof(CustomersContext))]
     partial class CustomerContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

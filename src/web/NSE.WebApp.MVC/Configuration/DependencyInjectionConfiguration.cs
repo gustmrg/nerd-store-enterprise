@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using NSE.WebApp.MVC.Extensions;
 using NSE.WebApp.MVC.Services;
 using NSE.WebApp.MVC.Services.Handlers;
@@ -11,6 +12,8 @@ public static class DependencyInjectionConfiguration
 {
     public static void AddServices(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddSingleton<IValidationAttributeAdapterProvider, CpfValidationAttributeAdapterProvider>();
+        
         services.AddTransient<ExceptionHandlerMiddleware>();
         services.AddTransient<AuthorizationDelegatingHandler>();
         

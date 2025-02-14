@@ -11,7 +11,7 @@ using NSE.Customers.API.Data;
 
 namespace NSE.Customers.API.Data.Migrations
 {
-    [DbContext(typeof(CustomerContext))]
+    [DbContext(typeof(CustomersContext))]
     [Migration("20250213151138_Initial")]
     partial class Initial
     {

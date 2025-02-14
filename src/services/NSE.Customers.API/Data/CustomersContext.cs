@@ -1,16 +1,18 @@
+using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using NSE.Core.Data;
 using NSE.Core.Mediator;
+using NSE.Core.Messages;
 using NSE.Customers.API.Extensions;
 using NSE.Customers.API.Models;
 
 namespace NSE.Customers.API.Data;
 
-public sealed class CustomerContext : DbContext, IUnitOfWork
+public sealed class CustomersContext : DbContext, IUnitOfWork
 {
     private readonly IMediatorHandler _mediatorHandler;
     
-    public CustomerContext(DbContextOptions<CustomerContext> options, IMediatorHandler mediatorHandler) : base(options)
+    public CustomersContext(DbContextOptions<CustomersContext> options, IMediatorHandler mediatorHandler) : base(options)
     {
         _mediatorHandler = mediatorHandler;
         ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
@@ -22,6 +24,9 @@ public sealed class CustomerContext : DbContext, IUnitOfWork
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Ignore<ValidationResult>();
+        modelBuilder.Ignore<Event>();
+        
         foreach (var property in modelBuilder.Model.GetEntityTypes()
                      .SelectMany(e => e.GetProperties())
                      .Where(p => p.ClrType == typeof(string)))
@@ -35,7 +40,7 @@ public sealed class CustomerContext : DbContext, IUnitOfWork
             relationship.DeleteBehavior = DeleteBehavior.ClientSetNull;
         }
         
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(CustomerContext).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(CustomersContext).Assembly);
     }
 
     public async Task<bool> Commit()

@@ -8,7 +8,7 @@ public static class ApiConfiguration
 {
     public static IServiceCollection AddApiConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<CustomerContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+        services.AddDbContext<CustomersContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
         
         services.AddControllers();
 

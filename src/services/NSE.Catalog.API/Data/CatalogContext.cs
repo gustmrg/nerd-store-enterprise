@@ -1,6 +1,8 @@
+using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using NSE.Catalog.API.Models;
 using NSE.Core.Data;
+using NSE.Core.Messages;
 
 namespace NSE.Catalog.API.Data;
 
@@ -15,6 +17,9 @@ public class CatalogContext : DbContext, IUnitOfWork
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Ignore<ValidationResult>();
+        modelBuilder.Ignore<Event>();
+        
         foreach (var property in modelBuilder.Model
                      .GetEntityTypes()
                      .SelectMany(e => e.GetProperties())

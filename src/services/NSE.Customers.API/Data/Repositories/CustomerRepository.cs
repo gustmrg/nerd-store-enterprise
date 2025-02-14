@@ -6,9 +6,9 @@ namespace NSE.Customers.API.Data.Repositories;
 
 public class CustomersRepository : ICustomersRepository
 {
-    private readonly CustomerContext _context;
+    private readonly CustomersContext _context;
 
-    public CustomersRepository(CustomerContext context)
+    public CustomersRepository(CustomersContext context)
     {
         _context = context;
     }
