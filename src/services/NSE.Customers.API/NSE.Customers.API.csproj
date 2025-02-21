@@ -40,4 +40,10 @@
       <ProjectReference Include="..\..\building blocks\NSE.WebAPI.Core\NSE.WebAPI.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="EasyNetQ">
+        <HintPath>..\..\..\..\..\..\.nuget\packages\easynetq\7.8.0\lib\netstandard2.0\EasyNetQ.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>

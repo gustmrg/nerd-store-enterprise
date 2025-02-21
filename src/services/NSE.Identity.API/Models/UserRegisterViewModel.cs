@@ -5,6 +5,12 @@ namespace NSE.Identity.API.Models;
 public class UserRegisterViewModel
 {
     [Required(ErrorMessage = "Field {0} is required")]
+    public string Name { get; set; }
+    
+    [Required(ErrorMessage = "Field {0} is required")]
+    public string DocumentNumber { get; set; }
+    
+    [Required(ErrorMessage = "Field {0} is required")]
     [EmailAddress(ErrorMessage = "Field {0} is invalid")]
     public string Email { get; set; }
     
