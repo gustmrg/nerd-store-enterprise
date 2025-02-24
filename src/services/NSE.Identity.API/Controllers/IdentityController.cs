@@ -22,11 +22,10 @@ public class IdentityController : MainController
     
     private IBus _bus;
 
-    public IdentityController(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, IOptions<AppSettings> appSettings, IBus bus)
+    public IdentityController(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, IOptions<AppSettings> appSettings)
     {
         _signInManager = signInManager;
         _userManager = userManager;
-        _bus = bus;
         _appSettings = appSettings.Value;
     }
     
