@@ -13,7 +13,6 @@ public class CatalogController : MainController
     }
     
     [HttpGet]
-    [Route("showcase")]
     public async Task<IActionResult> Index()
     {
         var products = await _catalogService.GetAll();

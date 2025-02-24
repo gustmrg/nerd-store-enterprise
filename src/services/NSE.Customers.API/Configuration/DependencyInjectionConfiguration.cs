@@ -6,6 +6,7 @@ using NSE.Customers.API.Application.Events;
 using NSE.Customers.API.Data;
 using NSE.Customers.API.Data.Repositories;
 using NSE.Customers.API.Models;
+using NSE.Customers.API.Services;
 
 namespace NSE.Customers.API.Configuration;
 

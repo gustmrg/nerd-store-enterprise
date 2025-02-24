@@ -5,6 +5,7 @@ var configuration = builder.Configuration;
 
 builder.Services.AddApiConfiguration(configuration);
 builder.Services.AddIdentityConfiguration(configuration);
+builder.Services.AddMessageBusConfiguration(configuration);
 builder.Services.AddSwaggerConfiguration();
 
 builder.Services.AddEndpointsApiExplorer();

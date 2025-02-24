@@ -1,13 +1,13 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using EasyNetQ;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using NSE.Core.Messages.Integration;
 using NSE.Identity.API.Models;
+using NSE.MessageBus;
 using NSE.WebAPI.Core.Identity;
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
@@ -19,13 +19,16 @@ public class IdentityController : MainController
     private readonly SignInManager<IdentityUser> _signInManager;
     private readonly UserManager<IdentityUser> _userManager;
     private readonly AppSettings _appSettings;
-    
-    private IBus _bus;
+    private readonly IMessageBus _messageBus;
 
-    public IdentityController(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, IOptions<AppSettings> appSettings)
+    public IdentityController(SignInManager<IdentityUser> signInManager, 
+        UserManager<IdentityUser> userManager, 
+        IOptions<AppSettings> appSettings, 
+        IMessageBus messageBus)
     {
         _signInManager = signInManager;
         _userManager = userManager;
+        _messageBus = messageBus;
         _appSettings = appSettings.Value;
     }
     
@@ -48,7 +51,13 @@ public class IdentityController : MainController
 
         if (result.Succeeded)
         {
-            var response = await CreateCustomer(model);
+            var customerResult = await CreateCustomer(model);
+
+            if (!customerResult.ValidationResult.IsValid)
+            {
+                await _userManager.DeleteAsync(user);
+                return CustomResponse(customerResult.ValidationResult);
+            }
             
             return CustomResponse(await GenerateJwtTokens(model.Email));
         }
@@ -59,17 +68,6 @@ public class IdentityController : MainController
         }
         
         return CustomResponse();
-    }
-
-    private async Task<ResponseMessage> CreateCustomer(UserRegisterViewModel model)
-    {
-        var user = await _userManager.FindByEmailAsync(model.Email);
-        var userRegister = new CreatedUserIntegrationEvent(Guid.Parse(user.Id), model.Name, model.Email, model.DocumentNumber);
-        
-        _bus = RabbitHutch.CreateBus("host=localhost:5672");
-        var response = await _bus.Rpc.RequestAsync<CreatedUserIntegrationEvent, ResponseMessage>(userRegister);
-
-        return response;
     }
 
     [HttpPost("login")]
@@ -148,4 +146,20 @@ public class IdentityController : MainController
     
     private static long ToUnixEpochDate(DateTime date)
         => (long)Math.Round((date.ToUniversalTime() - new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)).TotalSeconds);
+    
+    private async Task<ResponseMessage> CreateCustomer(UserRegisterViewModel model)
+    {
+        var user = await _userManager.FindByEmailAsync(model.Email);
+        var userRegister = new CreatedUserIntegrationEvent(Guid.Parse(user.Id), model.Name, model.Email, model.DocumentNumber);
+
+        try
+        {
+            return await _messageBus.RequestAsync<CreatedUserIntegrationEvent, ResponseMessage>(userRegister);
+        }
+        catch
+        {
+            await _userManager.DeleteAsync(user);
+            throw;
+        }
+    }
 }
