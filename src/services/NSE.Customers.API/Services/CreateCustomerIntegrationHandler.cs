@@ -19,10 +19,22 @@ public class CreateCustomerIntegrationHandler : BackgroundService
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _messageBus.RespondAsync<CreatedUserIntegrationEvent, ResponseMessage>(async request 
-            => await CreateCustomer(request));
+        SetResponder();
         
         return Task.CompletedTask;
+    }
+
+    private void SetResponder()
+    {
+        _messageBus.RespondAsync<CreatedUserIntegrationEvent, ResponseMessage>(async request 
+            => await CreateCustomer(request));
+
+        _messageBus.AdvancedBus.Connected += OnConnected;
+    }
+
+    private void OnConnected(object? sender, EventArgs e)
+    {
+        SetResponder();
     }
 
     private async Task<ResponseMessage> CreateCustomer(CreatedUserIntegrationEvent message)

@@ -1,3 +1,4 @@
+using EasyNetQ;
 using EasyNetQ.Internals;
 using NSE.Core.Messages.Integration;
 
@@ -5,6 +6,9 @@ namespace NSE.MessageBus;
 
 public interface IMessageBus : IDisposable
 {
+    bool IsConnected { get; }
+    IAdvancedBus AdvancedBus { get; }
+    
     void Publish<T>(T message) where T : IntegrationEvent;
     void PublishAsync<T>(T message) where T : IntegrationEvent;
     void Subscribe<T>(string subscriptionId, Action<T> onMessage) where T : class;
@@ -13,5 +17,4 @@ public interface IMessageBus : IDisposable
     Task<TResponse> RequestAsync<TRequest, TResponse>(TRequest request) where TRequest : IntegrationEvent where TResponse : ResponseMessage;
     IDisposable Respond<TRequest, TResponse>(Func<TRequest, TResponse> responder) where TRequest : IntegrationEvent where TResponse : ResponseMessage;
     AwaitableDisposable<IDisposable> RespondAsync<TRequest, TResponse>(Func<TRequest, Task<TResponse>> responder) where TRequest : IntegrationEvent where TResponse : ResponseMessage;
-    bool IsConnected { get; }
 }
