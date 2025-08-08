@@ -5,10 +5,19 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <UserSecretsId>fef4b70f-a924-4dff-bce1-8f925bdfe63c</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.8"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.19" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="8.0.19" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.19">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.19" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.19" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
     </ItemGroup>
 
@@ -16,6 +25,11 @@
       <Content Include="..\..\..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\building blocks\NSE.Core\NSE.Core.csproj" />
+      <ProjectReference Include="..\..\building blocks\NSE.WebAPI.Core\NSE.WebAPI.Core.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,16 +1,19 @@
 using Microsoft.EntityFrameworkCore;
-using NSE.Customers.API.Data;
+using NSE.ShoppingCart.API.Data;
 using NSE.WebAPI.Core.Identity;
 
-namespace NSE.Customers.API.Configuration;
+namespace NSE.ShoppingCart.API.Configuration;
 
 public static class ApiConfiguration
 {
     public static IServiceCollection AddApiConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<CustomersContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+        services.AddDbContext<ShoppingCartContext>(options => 
+            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
         
         services.AddControllers();
+        
+        services.AddEndpointsApiExplorer();
 
         services.AddCors(options =>
         {
@@ -22,7 +25,7 @@ public static class ApiConfiguration
         
         return services;
     }
-
+    
     public static void UseApiConfiguration(this IApplicationBuilder app)
     {
         app.UseHttpsRedirection();
