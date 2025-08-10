@@ -1,18 +1,7 @@
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
-namespace NSE.WebApp.MVC.Extensions;
-
-public interface IApplicationUser
-{
-    string Name { get; }
-    Guid GetUserId();
-    string GetUserEmail();
-    string GetUserToken();
-    bool IsAuthenticated();
-    bool HasRole(string role);
-    IEnumerable<Claim> GetClaims();
-    HttpContext GetHttpContext();
-}
+namespace NSE.WebAPI.Core.User;
 
 public class ApplicationUser : IApplicationUser
 {
@@ -58,41 +47,5 @@ public class ApplicationUser : IApplicationUser
     public HttpContext GetHttpContext()
     {
         return _httpContextAccessor.HttpContext;
-    }
-}
-
-public static class ClaimsPrincipalExtensions
-{
-    public static string GetUserId(this ClaimsPrincipal claimsPrincipal)
-    {
-        if (claimsPrincipal == null)
-        {
-            throw new ArgumentNullException(nameof(claimsPrincipal));
-        }
-
-        var claim = claimsPrincipal.FindFirst("sub");
-        return claim?.Value;
-    }
-    
-    public static string GetUserEmail(this ClaimsPrincipal claimsPrincipal)
-    {
-        if (claimsPrincipal == null)
-        {
-            throw new ArgumentNullException(nameof(claimsPrincipal));
-        }
-
-        var claim = claimsPrincipal.FindFirst("email");
-        return claim?.Value;
-    }
-    
-    public static string GetUserToken(this ClaimsPrincipal claimsPrincipal)
-    {
-        if (claimsPrincipal == null)
-        {
-            throw new ArgumentNullException(nameof(claimsPrincipal));
-        }
-
-        var claim = claimsPrincipal.FindFirst("JWT");
-        return claim?.Value;
     }
 }

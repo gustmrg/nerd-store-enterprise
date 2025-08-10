@@ -1,5 +1,5 @@
 using System.Net.Http.Headers;
-using NSE.WebApp.MVC.Extensions;
+using NSE.WebAPI.Core.User;
 
 namespace NSE.WebApp.MVC.Services.Handlers;
 
