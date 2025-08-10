@@ -45,11 +45,41 @@ public class ShoppingCartController : MainController
         }
 
         if (HasErrors()) return CustomResponse();
-        
-        var result = await _context.SaveChangesAsync();
-        if (result <= 0) AddError("Data could not be saved to the database.");
+
+        await SaveDataAsync();
         
         return CustomResponse();
+    }
+    
+    [HttpPut("cart/{productId}")]
+    public async Task<IActionResult> UpdateCartItem(Guid productId, CartItem item)
+    {
+        var cart = await GetCustomerCart();
+        var cartItem = await GetValidCartItem(productId, item, cart);
+        if (cartItem is null) return CustomResponse();
+        
+        cart.UpdateItemQuantity(cartItem, item.Quantity);
+        
+        _context.CartItems.Update(cartItem);
+        _context.CustomerCarts.Update(cart);
+        
+        await SaveDataAsync();
+        
+        return CustomResponse();
+    }
+    
+    [HttpDelete("cart/{productId}")]
+    public async Task<IActionResult> RemoveItemFromCart(Guid productId)
+    {
+        // Logic to remove an item from the shopping cart
+        return CustomResponse();
+    }
+
+    private async Task<CustomerCart?> GetCustomerCart()
+    {
+        return await _context.CustomerCarts
+            .Include(c => c.Items)
+            .FirstOrDefaultAsync(c => c.CustomerId == _applicationUser.GetUserId());
     }
     
     private void HandleNewCart(CartItem item)
@@ -77,25 +107,36 @@ public class ShoppingCartController : MainController
         
         _context.CustomerCarts.Update(cart);
     }
-    
-    [HttpPut("cart/{productId}")]
-    public async Task<IActionResult> UpdateCartItem(Guid productId, CartItem item)
+
+    private async Task<CartItem?> GetValidCartItem(Guid productId, CartItem item, CustomerCart cart)
     {
-        // Logic to update an item in the shopping cart
-        return CustomResponse();
-    }
-    
-    [HttpDelete("cart/{productId}")]
-    public async Task<IActionResult> RemoveItemFromCart(Guid productId)
-    {
-        // Logic to remove an item from the shopping cart
-        return CustomResponse();
+        if (productId != item.ProductId)
+        {
+            AddError($"Product {productId} is not valid.");
+            return null;
+        }
+
+        if (cart == null)
+        {
+            AddError("Cart is not valid.");
+            return null;
+        }
+        
+        var cartItem = await _context.CartItems
+            .FirstOrDefaultAsync(i => i.CustomerCartId == cart.Id && i.ProductId == productId);
+        
+        if (cartItem is null || !cart.CartItemExists(item))
+        {
+            AddError("Item is not in customer cart.");
+            return null;
+        }
+        
+        return cartItem;
     }
 
-    private async Task<CustomerCart?> GetCustomerCart()
+    private async Task SaveDataAsync()
     {
-        return await _context.CustomerCarts
-            .Include(c => c.Items)
-            .FirstOrDefaultAsync(c => c.CustomerId == _applicationUser.GetUserId());
+        var result = await _context.SaveChangesAsync();
+        if (result <= 0) AddError("Data could not be saved to the database.");
     }
 }

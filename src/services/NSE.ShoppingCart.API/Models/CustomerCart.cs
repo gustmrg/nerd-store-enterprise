@@ -51,4 +51,26 @@ public class CustomerCart
         Items.Add(item);
         CalculateTotalAmount();
     }
+    
+    internal void UpdateItem(CartItem item)
+    {
+        if (!item.IsValid()) return;
+        
+        item.SetCustomerCart(Id);
+
+        var existingItem = GetCartItemByProductId(item.ProductId);
+        
+        Items.Remove(existingItem);
+        Items.Add(item);
+
+        CalculateTotalAmount();
+    }
+    
+    internal void UpdateItemQuantity(CartItem item, int quantity)
+    {
+        if (quantity <= 0) return;
+        
+        item.UpdateQuantity(quantity);
+        UpdateItem(item);
+    }
 }

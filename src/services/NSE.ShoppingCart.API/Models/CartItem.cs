@@ -34,6 +34,13 @@ public class CartItem
         
         Quantity += quantity;
     }
+    
+    internal void UpdateQuantity(int quantity)
+    {
+        if (quantity <= 0) return;
+        
+        Quantity = quantity;
+    }
 
     internal bool IsValid()
     {
