@@ -1,3 +1,4 @@
+using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using NSE.ShoppingCart.API.Models;
 
@@ -22,6 +23,8 @@ public sealed class ShoppingCartContext : DbContext
         {
             property.SetColumnType("varchar(100)");
         }
+
+        modelBuilder.Ignore<ValidationResult>();
 
         modelBuilder.Entity<Models.CustomerCart>()
             .HasIndex(c => c.CustomerId)

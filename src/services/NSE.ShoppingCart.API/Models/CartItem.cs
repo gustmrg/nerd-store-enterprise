@@ -60,13 +60,13 @@ public class CartItem
                 .Length(2, 200).WithMessage("Product name must be between 2 and 200 characters.");
             
             RuleFor(c => c.Price)
-                .GreaterThan(0).WithMessage("Price must be greater than zero.");
+                .GreaterThan(0).WithMessage(item => $"The {item.Name} price must be greater than zero.");
 
             RuleFor(c => c.Quantity)
-                .GreaterThan(0).WithMessage("Quantity must be greater than zero.");
+                .GreaterThan(0).WithMessage(item => $"{item.Name} quantity must be greater than zero.");
 
             RuleFor(c => c.Quantity)
-                .LessThan(15).WithMessage("Maximum quantity allowed is 15.");
+                .LessThan(15).WithMessage(item => $"Maximum quantity for item {item.Name} allowed is 15.");
         }
     }
 }

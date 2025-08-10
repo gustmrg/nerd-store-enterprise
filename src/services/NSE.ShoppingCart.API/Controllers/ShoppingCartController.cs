@@ -44,6 +44,7 @@ public class ShoppingCartController : MainController
             HandleExistingCart(cart, item); 
         }
 
+        ValidateCart(cart);
         if (HasErrors()) return CustomResponse();
 
         await SaveDataAsync();
@@ -60,6 +61,9 @@ public class ShoppingCartController : MainController
         
         cart.UpdateItemQuantity(cartItem, item.Quantity);
         
+        ValidateCart(cart);
+        if (HasErrors()) return CustomResponse();
+        
         _context.CartItems.Update(cartItem);
         _context.CustomerCarts.Update(cart);
         
@@ -74,6 +78,9 @@ public class ShoppingCartController : MainController
         var cart = await GetCustomerCart();
         var cartItem = await GetValidCartItem(productId, cart);
         if (cartItem is null) return CustomResponse();
+        
+        ValidateCart(cart);
+        if (HasErrors()) return CustomResponse();
         
         cart.RemoveItem(cartItem);
         
@@ -147,5 +154,13 @@ public class ShoppingCartController : MainController
     {
         var result = await _context.SaveChangesAsync();
         if (result <= 0) AddError("Data could not be saved to the database.");
+    }
+
+    private bool ValidateCart(CustomerCart cart)
+    {
+        if (cart.IsValid()) return true;
+        
+        cart.ValidationResult.Errors.ToList().ForEach(error => AddError(error.ErrorMessage));
+        return false;
     }
 }
