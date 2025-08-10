@@ -73,4 +73,12 @@ public class CustomerCart
         item.UpdateQuantity(quantity);
         UpdateItem(item);
     }
+    
+    internal void RemoveItem(CartItem item)
+    {
+        var existingItem = GetCartItemByProductId(item.ProductId);
+        Items.Remove(existingItem);
+        
+        CalculateTotalAmount();
+    }
 }

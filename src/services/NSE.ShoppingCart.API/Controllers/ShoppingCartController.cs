@@ -55,7 +55,7 @@ public class ShoppingCartController : MainController
     public async Task<IActionResult> UpdateCartItem(Guid productId, CartItem item)
     {
         var cart = await GetCustomerCart();
-        var cartItem = await GetValidCartItem(productId, item, cart);
+        var cartItem = await GetValidCartItem(productId, cart, item);
         if (cartItem is null) return CustomResponse();
         
         cart.UpdateItemQuantity(cartItem, item.Quantity);
@@ -71,7 +71,17 @@ public class ShoppingCartController : MainController
     [HttpDelete("cart/{productId}")]
     public async Task<IActionResult> RemoveItemFromCart(Guid productId)
     {
-        // Logic to remove an item from the shopping cart
+        var cart = await GetCustomerCart();
+        var cartItem = await GetValidCartItem(productId, cart);
+        if (cartItem is null) return CustomResponse();
+        
+        cart.RemoveItem(cartItem);
+        
+        _context.CartItems.Remove(cartItem);
+        _context.CustomerCarts.Update(cart);
+        
+        await SaveDataAsync();
+        
         return CustomResponse();
     }
 
@@ -108,12 +118,11 @@ public class ShoppingCartController : MainController
         _context.CustomerCarts.Update(cart);
     }
 
-    private async Task<CartItem?> GetValidCartItem(Guid productId, CartItem item, CustomerCart cart)
+    private async Task<CartItem?> GetValidCartItem(Guid productId, CustomerCart cart, CartItem? item = null)
     {
-        if (productId != item.ProductId)
+        if (item is not null && productId != item.ProductId)
         {
-            AddError($"Product {productId} is not valid.");
-            return null;
+            AddError($"The product ID does not match the item\'s product ID ({item.ProductId}).");
         }
 
         if (cart == null)
